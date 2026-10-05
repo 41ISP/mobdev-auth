@@ -2,12 +2,37 @@ import { useState } from "react"
 import Button from "../components/Button"
 import Input from "../components/Input"
 import { Link } from "react-router-dom"
+import { api } from "../api/api"
 
 const SignUp = () => {
     const [error, setError] = useState("")
 
-    const handleSubmit = () => {}
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setError("")
 
+        if (e.target.password.value !== e.target.
+            password2.value) {
+            setError("Пароли не совпадают")
+            return
+        }
+
+
+        const user = {
+            username: e.target.username.value,
+            email: e.target.email.value,
+            password: e.target.password.value,
+        }
+
+    try {
+        const data = await api.registerUser(user)
+    } catch (error){
+        setError(error.response.data.error);
+        console.error(error);
+        
+        }
+        
+        }
     return (
         <div className="auth-page">
             <div className="auth-container">
@@ -17,6 +42,8 @@ const SignUp = () => {
                     <Input
                         id="username"
                         name="username"
+                        minlegth={5}
+                        maxlegth={15}
                         type="text"
                         label="Имя пользователя"
                         required
@@ -27,6 +54,8 @@ const SignUp = () => {
                         name="email"
                         type="email"
                         label="Почта"
+                        minlegth={6}
+                        maxlegth={40}
                         required
                         placeholder="Введите почту"
                     />
@@ -34,6 +63,8 @@ const SignUp = () => {
                         id="password"
                         name="password"
                         type="password"
+                        minlegth={4}
+                        maxlegth={40}
                         label="Пароль"
                         required
                         placeholder="Введите пароль"
