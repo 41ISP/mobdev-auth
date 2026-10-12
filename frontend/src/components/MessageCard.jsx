@@ -1,7 +1,19 @@
+import { api } from "../api/api"
 import { useUserStore } from "../store/useUserStore"
 
-const MessageCard = ({ userId, likes, content, username, createdAt }) => {
-    const {session} = useUserStore()
+const MessageCard = ({ id, userId, likes, content, username, createdAt }) => {
+    const { session } = useUserStore()
+    const handleDelete = async () => {
+        await api.deleteMessage(id)
+    }
+
+    const handleReport = async () => {
+        await api.reportMessage(id)
+    }
+
+    const handleLike = async () => {
+        await api.likeMessage(id)
+    }
     return (
         <div className="message-card">
             <div className="message-content">{content}</div>
@@ -10,18 +22,27 @@ const MessageCard = ({ userId, likes, content, username, createdAt }) => {
                 <span className="message-time">{createdAt}</span>
             </div>
             <div className="message-actions">
-                <button className="action-button">
-                    <span>{likes} 💗🤍</span>
-                    <span>Нравится</span>
-                </button>
-                <button className="action-button">
-                    <span>🚩</span>
-                    <span>Пожаловаться</span>
-                </button>
-                <button className="action-button delete">
-                    <span>❌</span>
-                    <span>Удалить</span>
-                </button>
+                {session?.user && (
+                    <>
+                        <button onClick={handleLike} className="action-button">
+                            <span>{likes} 💗🤍</span>
+                            <span>Нравится</span>
+                        </button>
+                        <button onClick={handleReport} className="action-button">
+                            <span>🚩</span>
+                            <span>Пожаловаться</span>
+                        </button>
+                    </>
+                )}
+                {userId === session?.user.id && (
+                    <button
+                        onClick={handleDelete}
+                        className="action-button delete"
+                    >
+                        <span>❌</span>
+                        <span>Удалить</span>
+                    </button>
+                )}
             </div>
         </div>
     )
