@@ -1,4 +1,7 @@
-const MessageCard = ({ likes, content, username, createdAt }) => {
+import { useUserStore } from "../store/useUserStore"
+
+const MessageCard = ({ userId, likes, content, username, createdAt }) => {
+    const {session} = useUserStore()
     return (
         <div className="message-card">
             <div className="message-content">{content}</div>
